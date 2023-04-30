@@ -1,0 +1,44 @@
+{
+  "manifest_version": 2,
+  "name": "Media Controller",
+  "author": "Tony Chan",
+  "version": "0.1.0",
+  "description": "Control media across tabs.",
+  "homepage_url": "https://github.com/tnychn/media-controller-extension",
+  "icons": {
+    "128": "icon.png"
+  },
+  "background": {
+    "scripts": [
+      "utils.js",
+      "background.js"
+    ]
+  },
+  "web_accessible_resources": [
+    "media.js"
+  ],
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "128": "icon.light.svg"
+    },
+    "theme_icons": [
+      {
+        "light": "icon.dark.svg",
+        "dark": "icon.light.svg",
+        "size": 128
+      }
+    ],
+    "default_title": "Media Controller",
+    "default_popup": "popup/index.html"
+  },
+  "permissions": [
+    "tabs",
+    "<all_urls>"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "media-controller.extension@tnychn"
+    }
+  }
+}

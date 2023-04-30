@@ -1,0 +1,46 @@
+{
+  "name": "media-controller-extension",
+  "version": "0.1.0",
+  "description": "A Firefox browser extension to control media across tabs.",
+  "repository": "github:tnychn/media-controller-extension",
+  "author": {
+    "name": "Tony Chan",
+    "email": "tnychn@protonmail.com",
+    "url": "https://github.com/tnychn"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "web-ext build -s ./src -a . -n media-controller.firefox.zip",
+    "start": "web-ext run -s ./src"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "printWidth": 120
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "browser": true,
+      "webextensions": true
+    },
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "prettier"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:prettier/recommended"
+    ]
+  },
+  "devDependencies": {
+    "@types/firefox-webext-browser": "^111.0.1",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "web-ext": "^7.6.1"
+  }
+}
