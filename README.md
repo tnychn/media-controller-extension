@@ -4,7 +4,10 @@
 
 <h1 align="center">media-controller-extension</h1>
 
-<p align="center"><img src="./demo.png" width="50%" /></p>
+<p align="center">
+  <img src="./preview1.png" width="40%" />
+  <img src="./preview2.png" width="40%" />
+</p>
 
 <p align="center">
   <a href="https://addons.mozilla.org/firefox/addon/mcx">
