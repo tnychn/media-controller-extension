@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Media Controller",
   "author": "Tony Chan",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Control media across tabs.",
   "homepage_url": "https://github.com/tnychn/media-controller-extension",
   "icons": {
@@ -10,7 +10,6 @@
   },
   "background": {
     "scripts": [
-      "utils.js",
       "background.js"
     ]
   },

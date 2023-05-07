@@ -7,6 +7,7 @@ html,
 body {
   margin: 0;
   width: 100%;
+  min-width: 500px;
   max-width: 500px;
 }
 
@@ -20,9 +21,23 @@ main {
   height: 100%;
 }
 
+button {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: none;
+  transition: all 100ms ease-in-out;
+}
+
+button:hover {
+  cursor: pointer;
+  transform: scale(1.25);
+}
+
 .tab {
   width: 100%;
   height: 100%;
+  min-height: 112px;
   max-height: 112px;
   display: flex;
 }
@@ -47,7 +62,7 @@ main {
   font-weight: bold;
   margin-top: 0.5rem;
   white-space: nowrap;
-  overflow: hidden;
+  overflow-x: hidden;
   text-overflow: ellipsis;
 }
 
@@ -58,22 +73,4 @@ main {
 
 .tab-meta-controls {
   margin-top: 1rem;
-}
-
-.tab-meta-controls > button {
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  background: none;
-  transition: all 100ms ease-in-out;
-}
-
-.tab-meta-controls > button:hover {
-  cursor: pointer;
-  transform: scale(1.25);
-}
-
-.tab-meta-controls > button > img {
-  width: 100%;
-  height: 100%;
 }

@@ -1,20 +1,22 @@
 (() => {
-  var s = document.createElement("script");
-  s.src = browser.runtime.getURL("media.js");
-  s.onload = () => s.remove();
-  document.head.appendChild(s);
+  let $script = document.querySelector("script#mcx-inject");
+  if ($script === null) {
+    window.addEventListener("hook", async () => {
+      const $media = document.querySelector("[mcx-media]");
+      await browser.runtime.sendMessage({
+        type: "@hook",
+        media: {
+          paused: $media.paused,
+          muted: $media.muted,
+        },
+      });
+    });
+  } else {
+    $script.remove();
+    $script = undefined;
+  }
+  $script = document.createElement("script");
+  $script.id = "mcx-inject";
+  $script.src = browser.runtime.getURL("media.js");
+  document.head.appendChild($script);
 })();
-
-// TODO: avoid adding duplicated event listeners by removing listener when not used anymore
-
-// forward media events to background
-window.addEventListener("MCX_hook", async () => await browser.runtime.sendMessage({ event: "@hook" }));
-["play", "pause"].forEach((event) =>
-  window.addEventListener(`MCX_$media_${event}`, async () => await browser.runtime.sendMessage({ event }))
-);
-window.addEventListener("MCX_$media_volumechange", async ({ detail: { volume } }) => {
-  await browser.runtime.sendMessage({
-    event: "volumechange",
-    volume,
-  });
-});
