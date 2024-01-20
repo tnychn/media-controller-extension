@@ -27,20 +27,16 @@
       "ecmaVersion": "latest",
       "sourceType": "module"
     },
-    "plugins": [
-      "prettier"
-    ],
     "extends": [
       "eslint:recommended",
-      "plugin:prettier/recommended"
+      "prettier"
     ]
   },
   "devDependencies": {
-    "@types/firefox-webext-browser": "^111.0.1",
-    "eslint": "^8.39.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "@types/firefox-webext-browser": "^111.0.5",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^8.10.0",
     "prettier": "^2.8.8",
-    "web-ext": "^7.6.1"
+    "web-ext": "^7.10.0"
   }
 }
