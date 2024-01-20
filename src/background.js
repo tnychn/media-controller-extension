@@ -11,18 +11,25 @@ async function init(tab) {
   if (typeof tab === "number") {
     tab = await browser.tabs.get(tab);
   }
+  const url = new URL(tab.url);
   return {
     id: tab.id,
     wid: tab.windowId,
     media: null,
     title: tab.title,
     favicon: tab.favIconUrl,
-    hostname: new URL(tab.url).hostname,
-    thumbnail: (
-      await browser.tabs.executeScript(tab.id, {
-        code: `document.querySelector("meta[property='og:image']")?.getAttribute("content");`,
-      })
-    )[0],
+    hostname: url.hostname,
+    thumbnail: await (async () => {
+      if (url.hostname === "www.youtube.com") {
+        const vid = tab.url.match(/\/(?:watch\?v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)[1];
+        return `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
+      }
+      return (
+        await browser.tabs.executeScript(tab.id, {
+          code: `document.querySelector("meta[property='og:image']")?.getAttribute("content");`,
+        })
+      )[0];
+    })(),
   };
 }
 
