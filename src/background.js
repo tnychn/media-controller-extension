@@ -20,7 +20,7 @@ async function init(tab) {
     favicon: tab.favIconUrl,
     hostname: url.hostname,
     thumbnail: await (async () => {
-      if (url.hostname === "www.youtube.com") {
+      if (url.hostname.match(/^(www|music)\.youtube\.com$/)) {
         const vid = tab.url.match(/\/(?:watch\?v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)[1];
         return `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
       }
