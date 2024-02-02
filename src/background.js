@@ -1,4 +1,4 @@
-window.__tabs__ = {};
+window.__tabs__ = new Map();
 
 function applyPopupViews(func, args) {
   const views = browser.extension.getViews({ type: "popup" });
@@ -34,22 +34,22 @@ async function init(tab) {
 }
 
 async function register(tid) {
-  window.__tabs__[tid] = await init(tid);
-  applyPopupViews("add", [window.__tabs__[tid]]);
+  window.__tabs__.set(tid, await init(tid));
+  applyPopupViews("add", [window.__tabs__.get(tid)]);
   await browser.browserAction.enable();
   await browser.browserAction.setBadgeText({
-    text: String(Object.keys(window.__tabs__).length),
+    text: String(window.__tabs__.size),
   });
   await browser.tabs.executeScript(tid, { file: "inject.js" });
 }
 
 async function unregister(tid) {
-  delete window.__tabs__[tid];
+  window.__tabs__.delete(tid);
   applyPopupViews("del", [tid]);
-  const length = Object.keys(window.__tabs__).length;
-  length === 0 && (await browser.browserAction.disable());
+  const size = window.__tabs__.size;
+  size === 0 && (await browser.browserAction.disable());
   await browser.browserAction.setBadgeText({
-    text: length > 0 ? String(length) : null,
+    text: size > 0 ? String(size) : null,
   });
   await browser.tabs.sendMessage(tid, "@unhook");
 }
@@ -66,7 +66,7 @@ browser.tabs.query({ audible: true, status: "complete" }).then(async (tabs) => {
 
 browser.tabs.onUpdated.addListener(
   async (tid, { audible }) => {
-    if (audible && !(tid in window.__tabs__)) {
+    if (audible && !window.__tabs__.has(tid)) {
       await register(tid);
     }
   },
@@ -89,32 +89,32 @@ browser.tabs.onUpdated.addListener(
 
 browser.tabs.onUpdated.addListener(
   async (tid, { title }) => {
-    if (tid in window.__tabs__) {
-      window.__tabs__[tid].title = title;
-      applyPopupViews("update", [window.__tabs__[tid]]);
+    if (window.__tabs__.has(tid)) {
+      window.__tabs__.get(tid).title = title;
+      applyPopupViews("update", [window.__tabs__.get(tid)]);
     }
   },
   { properties: ["title"] }
 );
 
 browser.tabs.onRemoved.addListener(async (tid) => {
-  if (tid in window.__tabs__) {
+  if (window.__tabs__.has(tid)) {
     await unregister(tid);
   }
 });
 
 browser.runtime.onMessage.addListener(async (message, sender) => {
   const tid = sender.tab.id;
-  console.log(message.type);
+  const tab = window.__tabs__.get(tid);
   if (message.type === "@hook") {
-    window.__tabs__[tid].media = message.media;
+    tab.media = message.media;
     await browser.tabs.executeScript(tid, { file: "hook.js" });
   } else if (message.type === "play") {
-    window.__tabs__[tid].media.paused = false;
+    tab.media.paused = false;
   } else if (message.type === "pause") {
-    window.__tabs__[tid].media.paused = true;
+    tab.media.paused = true;
   } else if (message.type === "volumechange") {
-    window.__tabs__[tid].media.muted = message.volume === null;
+    tab.media.muted = message.volume === null;
   } else return;
-  applyPopupViews("update", [window.__tabs__[tid]]);
+  applyPopupViews("update", [tab]);
 });

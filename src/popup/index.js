@@ -10,6 +10,7 @@ const $tab = async (tab) => {
   const bgColor = await (async (src) => {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
+    // FIXME: performance overhead whenever popup is open
     return new Promise((resolve) => {
       const image = new Image();
       image.onload = () => {
@@ -94,5 +95,5 @@ async function update(tab) {
 
 (async () => {
   const background = await browser.runtime.getBackgroundPage();
-  Object.values(background.__tabs__).forEach((tab) => add(tab));
+  Array.from(background.__tabs__.values()).reverse().forEach(add);
 })();
