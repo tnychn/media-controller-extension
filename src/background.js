@@ -92,7 +92,7 @@ browser.tabs.onUpdated.addListener(
 
 browser.tabs.onUpdated.addListener(
   async (tid) => {
-    if (tid in window.__tabs__) {
+    if (window.__tabs__.has(tid)) {
       await unregister(tid);
       await new Promise((r) => setTimeout(r, 4500));
       const tab = await browser.tabs.get(tid);
