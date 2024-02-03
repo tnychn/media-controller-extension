@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Media Controller",
   "author": "Tony Chan",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Control media across tabs.",
   "homepage_url": "https://github.com/tnychn/media-controller-extension",
   "icons": {
