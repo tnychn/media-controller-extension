@@ -1,4 +1,4 @@
-/* global Icons */
+import Icons from "./icons.js";
 
 const $main = document.querySelector("main");
 
@@ -7,50 +7,47 @@ const $tab = async (tab) => {
   $.className = "tab";
   $.dataset.tid = tab.id;
 
-  const bgColor = await (async (src) => {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    // FIXME: performance overhead whenever popup is open
-    return new Promise((resolve) => {
-      const image = new Image();
-      image.onload = () => {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        context.drawImage(image, 0, 0, 1, 1);
-        resolve(context.getImageData(0, 0, 1, 1).data);
-      };
-      image.src = src;
-    });
-  })(tab.thumbnail || tab.favicon);
-  const fgColor = (0xffffff ^ ((1 << 24) | (bgColor[0] << 16) | (bgColor[1] << 8) | bgColor[2])).toString(16).slice(1);
+  const fgColor = (([r, g, b]) => {
+    function padZero(str, len) {
+      len = len || 2;
+      var zeros = new Array(len).join("0");
+      return (zeros + str).slice(-len);
+    }
+    r = (255 - r).toString(16);
+    g = (255 - g).toString(16);
+    b = (255 - b).toString(16);
+    return "#" + padZero(r) + padZero(g) + padZero(b);
+  })(tab.color);
 
   $.innerHTML = `
-  <div class="tab-meta" style="background-color: rgba(${bgColor.join(",")}); color: #${fgColor};">
-    <div class="tab-meta-url">
-      <img src="${tab.favicon}" width="16px" height="16px" />
-      <span style="margin-left: 0.25em;">${tab.hostname}</span>
+  <div class="tab-meta" style="background-color: rgba(${tab.color.join(",")}); color: ${fgColor};">
+    <div class="tab-meta-info">
+      <div class="tab-meta-info-url">
+        <img src="${tab.favicon}" width="16px" height="16px" />
+        <span>${tab.hostname}</span>
+      </div>
+      <div class="tab-meta-info-title">${tab.title}</div>
     </div>
-    <div class="tab-meta-title">${tab.title}</div>
-    <div class="tab-meta-controls" style="display: ${tab.media === null ? "none" : "block"};">
-      <button class="control-backward" style="color: #${fgColor};">
+    <div class="tab-meta-controls" style="display: ${tab.media === null ? "none" : "inline-flex"};">
+      <button class="control-backward" style="color: ${fgColor};">
         ${Icons.backward}
       </button>
-      <button class="control-playpause" style="color: #${fgColor}; margin: 0 0.75em;">
+      <button class="control-playpause" style="color: ${fgColor};">
         ${tab.media?.paused ? Icons.play : Icons.pause}
       </button>
-      <button class="control-forward" style="color: #${fgColor};">
+      <button class="control-forward" style="color: ${fgColor};">
         ${Icons.forward}
       </button>
-      <button class="control-mute" style="color: #${fgColor}; margin-left: 1.5em;">
+      <button class="control-mute" style="color: ${fgColor};">
         ${tab.media?.muted ? Icons.muted : Icons.unmuted}
       </button>
     </div>
   </div>
-  <div class="tab-thumbnail" style="background-color: rgba(${bgColor.join(",")})">
-    ${tab.thumbnail ? `<img src="${tab.thumbnail}" width="100%" height="100%" />` : ""}
+  <div class="tab-thumbnail" style="background-color: rgba(${tab.color.join(",")})">
+    ${tab.thumbnail ? `<img src="${tab.thumbnail}" height="100%" />` : ""}
   </div>`;
 
-  $.querySelector("div.tab-meta-title").onclick = () => {
+  $.querySelector("div.tab-meta-info-title").onclick = () => {
     browser.tabs.update(tab.id, { active: true });
     browser.windows.update(tab.wid, { focused: true });
   };
@@ -76,24 +73,21 @@ const $tab = async (tab) => {
   return $;
 };
 
-// eslint-disable-next-line no-unused-vars
-async function add(tab) {
+window["add"] = async function (tab) {
   if ($main.querySelector(`div[data-tid="${tab.id}"]`) === null) {
     $main.append(await $tab(tab));
   }
-}
+};
 
-// eslint-disable-next-line no-unused-vars
-async function del(tid) {
+window["del"] = async function (tid) {
   $main.querySelector(`div[data-tid="${tid}"]`)?.remove();
-}
+};
 
-// eslint-disable-next-line no-unused-vars
-async function update(tab) {
+window["update"] = async function (tab) {
   $main.querySelector(`div[data-tid="${tab.id}"]`)?.replaceWith(await $tab(tab));
-}
+};
 
 (async () => {
   const background = await browser.runtime.getBackgroundPage();
-  Array.from(background.__tabs__.values()).reverse().forEach(add);
+  Array.from(background.__tabs__.values()).reverse().forEach(window["add"]);
 })();

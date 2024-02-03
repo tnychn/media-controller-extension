@@ -12,6 +12,32 @@ async function init(tab) {
     tab = await browser.tabs.get(tab);
   }
   const url = new URL(tab.url);
+  const thumbnail = await (async () => {
+    if (url.hostname.match(/^(www|music)\.youtube\.com$/)) {
+      const vid = tab.url.match(/\/(?:watch\?v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)[1];
+      return `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
+    }
+    return (
+      await browser.tabs.executeScript(tab.id, {
+        code: `document.querySelector("meta[property='og:image']")?.getAttribute("content");`,
+      })
+    )[0];
+  })();
+  const color = await (async (src) => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0, 1, 1);
+        resolve(context.getImageData(0, 0, 1, 1).data);
+        // returns [r, g, b, a]
+      };
+      image.src = src;
+    });
+  })(thumbnail || tab.favIconUrl);
   return {
     id: tab.id,
     wid: tab.windowId,
@@ -19,17 +45,8 @@ async function init(tab) {
     title: tab.title,
     favicon: tab.favIconUrl,
     hostname: url.hostname,
-    thumbnail: await (async () => {
-      if (url.hostname.match(/^(www|music)\.youtube\.com$/)) {
-        const vid = tab.url.match(/\/(?:watch\?v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)[1];
-        return `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
-      }
-      return (
-        await browser.tabs.executeScript(tab.id, {
-          code: `document.querySelector("meta[property='og:image']")?.getAttribute("content");`,
-        })
-      )[0];
-    })(),
+    thumbnail: thumbnail,
+    color: color,
   };
 }
 
@@ -116,5 +133,6 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
   } else if (message.type === "volumechange") {
     tab.media.muted = message.volume === null;
   } else return;
+  // window.__tabs__.set(tid, tab);
   applyPopupViews("update", [tab]);
 });
