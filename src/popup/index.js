@@ -44,7 +44,7 @@ const $tab = async (tab) => {
     </div>
   </div>
   <div class="tab-thumbnail" style="background-color: rgba(${tab.color.join(",")})">
-    ${tab.thumbnail ? `<img src="${tab.thumbnail}" height="100%" />` : ""}
+    ${tab.thumbnail ? `<img src="${tab.thumbnail}" width="100%" height="100%" />` : ""}
   </div>`;
 
   $.querySelector("div.tab-meta-info-title").onclick = () => {
