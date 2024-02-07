@@ -41,6 +41,9 @@ const $tab = async (tab) => {
       <button class="control-mute" style="color: ${fgColor};">
         ${tab.media?.muted ? Icons.muted : Icons.unmuted}
       </button>
+      <button class="control-close" style="color: ${fgColor};">
+        ${Icons.close}
+      </button>
     </div>
   </div>
   <div class="tab-thumbnail" style="background-color: rgba(${tab.color.join(",")})">
@@ -69,6 +72,9 @@ const $tab = async (tab) => {
     browser.tabs.executeScript(tab.id, {
       code: "window.$media.muted = !window.$media.muted;",
     });
+  };
+  $.querySelector("button.control-close").onclick = () => {
+    browser.tabs.remove(tab.id);
   };
   return $;
 };

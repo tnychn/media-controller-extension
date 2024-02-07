@@ -82,6 +82,10 @@ button:hover {
   gap: 0.75em;
 }
 
+.tab-meta-controls > :nth-last-child(2) {
+  margin-left: 0.75em;
+}
+
 .tab-meta-controls > :last-child {
   margin-left: 0.75em;
 }
