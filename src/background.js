@@ -114,6 +114,15 @@ browser.tabs.onUpdated.addListener(
   { properties: ["title"] }
 );
 
+browser.tabs.onUpdated.addListener(
+  async (tid, { discarded }) => {
+    if (discarded && window.__tabs__.has(tid)) {
+      await unregister(tid);
+    }
+  },
+  { properties: ["discarded"] }
+);
+
 browser.tabs.onRemoved.addListener(async (tid) => {
   if (window.__tabs__.has(tid)) {
     await unregister(tid);
@@ -133,6 +142,5 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
   } else if (message.type === "volumechange") {
     tab.media.muted = message.volume === null;
   } else return;
-  // window.__tabs__.set(tid, tab);
   applyPopupViews("update", [tab]);
 });

@@ -2,7 +2,7 @@ import Icons from "./icons.js";
 
 const $main = document.querySelector("main");
 
-const $tab = async (tab) => {
+const $tab = (tab) => {
   const $ = document.createElement("div");
   $.className = "tab";
   $.dataset.tid = tab.id;
@@ -28,22 +28,29 @@ const $tab = async (tab) => {
       </div>
       <div class="tab-meta-info-title">${tab.title}</div>
     </div>
-    <div class="tab-meta-controls" style="display: ${tab.media === null ? "none" : "inline-flex"};">
-      <button class="control-backward" style="color: ${fgColor};">
-        ${Icons.backward}
-      </button>
-      <button class="control-playpause" style="color: ${fgColor};">
-        ${tab.media?.paused ? Icons.play : Icons.pause}
-      </button>
-      <button class="control-forward" style="color: ${fgColor};">
-        ${Icons.forward}
-      </button>
-      <button class="control-mute" style="color: ${fgColor};">
-        ${tab.media?.muted ? Icons.muted : Icons.unmuted}
-      </button>
-      <button class="control-close" style="color: ${fgColor};">
-        ${Icons.close}
-      </button>
+    <div class="tab-meta-controls">
+      <div class="tab-meta-controls-media" style="visibility: ${tab.media === null ? "hidden" : "visible"};">
+        <button class="control-backward" style="color: ${fgColor};">
+          ${Icons.backward}
+        </button>
+        <button class="control-playpause" style="color: ${fgColor};">
+          ${tab.media?.paused ? Icons.play : Icons.pause}
+        </button>
+        <button class="control-forward" style="color: ${fgColor};">
+          ${Icons.forward}
+        </button>
+        <button class="control-mute" style="color: ${fgColor};">
+          ${tab.media?.muted ? Icons.muted : Icons.unmuted}
+        </button>
+      </div>
+      <div class="tab-meta-controls-life">
+        <button class="control-discard" style="color: ${fgColor};">
+          ${Icons.discard}
+        </button>
+        <button class="control-close" style="color: ${fgColor};">
+          ${Icons.close}
+        </button>
+      </div>
     </div>
   </div>
   <div class="tab-thumbnail" style="background-color: rgba(${tab.color.join(",")})">
@@ -73,6 +80,9 @@ const $tab = async (tab) => {
       code: "window.$media.muted = !window.$media.muted;",
     });
   };
+  $.querySelector("button.control-discard").onclick = () => {
+    browser.tabs.discard(tab.id);
+  };
   $.querySelector("button.control-close").onclick = () => {
     browser.tabs.remove(tab.id);
   };
@@ -81,7 +91,7 @@ const $tab = async (tab) => {
 
 window["add"] = async function (tab) {
   if ($main.querySelector(`div[data-tid="${tab.id}"]`) === null) {
-    $main.append(await $tab(tab));
+    $main.prepend($tab(tab));
   }
 };
 
@@ -90,7 +100,7 @@ window["del"] = async function (tid) {
 };
 
 window["update"] = async function (tab) {
-  $main.querySelector(`div[data-tid="${tab.id}"]`)?.replaceWith(await $tab(tab));
+  $main.querySelector(`div[data-tid="${tab.id}"]`)?.replaceWith($tab(tab));
 };
 
 (async () => {

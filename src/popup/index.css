@@ -79,13 +79,19 @@ button:hover {
 }
 
 .tab-meta-controls {
+  display: flex;
+}
+
+.tab-meta-controls-media,
+.tab-meta-controls-life {
+  display: inline-flex;
   gap: 0.75em;
 }
 
-.tab-meta-controls > :nth-last-child(2) {
-  margin-left: 0.75em;
+.tab-meta-controls-life {
+  margin-left: auto;
 }
 
-.tab-meta-controls > :last-child {
-  margin-left: 0.75em;
+.tab:not(:hover) .tab-meta-controls-life {
+  visibility: hidden;
 }
