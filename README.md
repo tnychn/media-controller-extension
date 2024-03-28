@@ -20,12 +20,12 @@ single place at the toolbar, similar to Chrome's [media control button](https://
 
 > Inspired by [this](https://connect.mozilla.org/t5/ideas/media-control-button/idi-p/8544) thread on *connect.mozilla.org*.
 
-> Tested on YouTube, SoundCloud, Twitch, Bandcamp etc.
+Tested on *YouTube*, *SoundCloud*, *Twitch*, *Bandcamp* etc.
 
 ---
 
 <p align="center">
-  <sub><strong>Made with ♥︎ by tnychn</strong></sub>
+  <sub><strong>~ crafted with ♥︎ by tnychn ~</strong></sub>
   <br>
-  <sub><strong>MIT © 2023 Tony Chan</strong></sub>
+  <sub><strong>MIT © 2024 Tony Chan</strong></sub>
 </p>
