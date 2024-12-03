@@ -1,4 +1,5 @@
 import Icons from "./icons.js";
+import { getAccessibleColor } from "./color.js";
 
 let background;
 
@@ -9,20 +10,10 @@ const $tab = (tab) => {
   $.className = "tab";
   $.dataset.tid = tab.id;
 
-  const fgColor = (([r, g, b]) => {
-    function padZero(str, len) {
-      len = len || 2;
-      var zeros = new Array(len).join("0");
-      return (zeros + str).slice(-len);
-    }
-    r = (255 - r).toString(16);
-    g = (255 - g).toString(16);
-    b = (255 - b).toString(16);
-    return "#" + padZero(r) + padZero(g) + padZero(b);
-  })(tab.color);
+  const color = getAccessibleColor(tab.color);
 
   $.innerHTML = `
-  <div class="tab-meta" style="background-color: rgba(${tab.color.join(",")}); color: ${fgColor};">
+  <div class="tab-meta" style="background-color: rgba(${tab.color.join(",")}); color: ${color};">
     <div class="tab-meta-info">
       <div class="tab-meta-info-url">
         <img src="${tab.favicon}" width="16px" height="16px" />
@@ -33,24 +24,24 @@ const $tab = (tab) => {
       </div>
     </div>
     <div class="tab-meta-controls" style="visibility: ${tab.media === null ? "hidden" : "visible"};">
-      <button title="Seek Backward" class="control-backward" style="color: ${fgColor};">
+      <button title="Seek Backward" class="control-backward" style="color: ${color};">
         ${Icons.backward}
       </button>
-      <button title="${tab.media?.paused ? "Play" : "Pause"}" class="control-playpause" style="color: ${fgColor};">
+      <button title="${tab.media?.paused ? "Play" : "Pause"}" class="control-playpause" style="color: ${color};">
         ${tab.media?.paused ? Icons.play : Icons.pause}
       </button>
-      <button title="Seek Forward" class="control-forward" style="color: ${fgColor};">
+      <button title="Seek Forward" class="control-forward" style="color: ${color};">
         ${Icons.forward}
       </button>
-      <button title="${tab.media?.muted ? "Unmute" : "Mute"}" class="control-mute" style="color: ${fgColor};">
+      <button title="${tab.media?.muted ? "Unmute" : "Mute"}" class="control-mute" style="color: ${color};">
         ${tab.media?.muted ? Icons.muted : Icons.unmuted}
       </button>
     </div>
     <div class="tab-meta-life">
-      <button title="Remove from List" class="life-remove" style="color: ${fgColor};">
+      <button title="Remove from List" class="life-remove" style="color: ${color};">
         ${Icons.remove}
       </button>
-      <button title="Close Tab" class="life-close" style="color: ${fgColor};">
+      <button title="Close Tab" class="life-close" style="color: ${color};">
         ${Icons.close}
       </button>
     </div>
