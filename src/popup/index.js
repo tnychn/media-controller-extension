@@ -1,5 +1,7 @@
 import Icons from "./icons.js";
 
+let background;
+
 const $main = document.querySelector("main");
 
 const $tab = (tab) => {
@@ -26,31 +28,31 @@ const $tab = (tab) => {
         <img src="${tab.favicon}" width="16px" height="16px" />
         <span>${tab.hostname}</span>
       </div>
-      <div class="tab-meta-info-title">${tab.title}</div>
+      <div class="tab-meta-info-title">
+        <span title="${tab.title}">${tab.title}</span>
+      </div>
     </div>
-    <div class="tab-meta-controls">
-      <div class="tab-meta-controls-media" style="visibility: ${tab.media === null ? "hidden" : "visible"};">
-        <button class="control-backward" style="color: ${fgColor};">
-          ${Icons.backward}
-        </button>
-        <button class="control-playpause" style="color: ${fgColor};">
-          ${tab.media?.paused ? Icons.play : Icons.pause}
-        </button>
-        <button class="control-forward" style="color: ${fgColor};">
-          ${Icons.forward}
-        </button>
-        <button class="control-mute" style="color: ${fgColor};">
-          ${tab.media?.muted ? Icons.muted : Icons.unmuted}
-        </button>
-      </div>
-      <div class="tab-meta-controls-life">
-        <button class="control-discard" style="color: ${fgColor};">
-          ${Icons.discard}
-        </button>
-        <button class="control-close" style="color: ${fgColor};">
-          ${Icons.close}
-        </button>
-      </div>
+    <div class="tab-meta-controls" style="visibility: ${tab.media === null ? "hidden" : "visible"};">
+      <button title="Seek Backward" class="control-backward" style="color: ${fgColor};">
+        ${Icons.backward}
+      </button>
+      <button title="${tab.media?.paused ? "Play" : "Pause"}" class="control-playpause" style="color: ${fgColor};">
+        ${tab.media?.paused ? Icons.play : Icons.pause}
+      </button>
+      <button title="Seek Forward" class="control-forward" style="color: ${fgColor};">
+        ${Icons.forward}
+      </button>
+      <button title="${tab.media?.muted ? "Unmute" : "Mute"}" class="control-mute" style="color: ${fgColor};">
+        ${tab.media?.muted ? Icons.muted : Icons.unmuted}
+      </button>
+    </div>
+    <div class="tab-meta-life">
+      <button title="Remove from List" class="life-remove" style="color: ${fgColor};">
+        ${Icons.remove}
+      </button>
+      <button title="Close Tab" class="life-close" style="color: ${fgColor};">
+        ${Icons.close}
+      </button>
     </div>
   </div>
   <div class="tab-thumbnail" style="background-color: rgba(${tab.color.join(",")})">
@@ -80,10 +82,12 @@ const $tab = (tab) => {
       code: "window.$media.muted = !window.$media.muted;",
     });
   };
-  $.querySelector("button.control-discard").onclick = () => {
-    browser.tabs.discard(tab.id);
+  $.querySelector("button.life-remove").onclick = () => {
+    if (background.__tabs__.has(tab.id)) {
+      background.unregister(tab.id);
+    }
   };
-  $.querySelector("button.control-close").onclick = () => {
+  $.querySelector("button.life-close").onclick = () => {
     browser.tabs.remove(tab.id);
   };
   return $;
@@ -104,6 +108,6 @@ window["update"] = async function (tab) {
 };
 
 (async () => {
-  const background = await browser.runtime.getBackgroundPage();
+  background = await browser.runtime.getBackgroundPage();
   Array.from(background.__tabs__.values()).reverse().forEach(window["add"]);
 })();
