@@ -101,6 +101,9 @@ window["add"] = async function (tab) {
 
 window["del"] = async function (tid) {
   $main.querySelector(`div[data-tid="${tid}"]`)?.remove();
+  if ($main.querySelectorAll("div.tab").length === 0) {
+    window.close(); // close popup when the only tab is removed
+  }
 };
 
 window["update"] = async function (tab) {
