@@ -46,7 +46,8 @@ button:hover {
 
 .tab {
   width: 100%;
-  height: 112px;
+  min-height: 112px;
+  max-height: 112px;
   display: flex;
   flex-direction: row;
 }
@@ -61,7 +62,6 @@ button:hover {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .tab-meta-life {
@@ -104,6 +104,12 @@ button:hover {
 }
 
 .tab-meta-controls {
+  margin-top: auto;
   display: inline-flex;
-  gap: 0.75em;
+  gap: 1em;
+}
+
+#ribbon {
+  padding: 2px;
+  background: linear-gradient(90deg, #fdbb2d 0%, #22c1c3 100%);
 }

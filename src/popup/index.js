@@ -46,7 +46,7 @@ const $tab = (tab) => {
       </button>
     </div>
   </div>
-  <div class="tab-thumbnail" style="background-color: rgba(${tab.color.join(",")})">
+  <div class="tab-thumbnail">
     ${tab.thumbnail ? `<img src="${tab.thumbnail}" width="100%" height="100%" />` : ""}
   </div>`;
 
