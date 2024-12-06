@@ -47,7 +47,7 @@ const $tab = (tab) => {
     </div>
   </div>
   <div class="tab-thumbnail">
-    ${tab.thumbnail ? `<img src="${tab.thumbnail}" width="100%" height="100%" />` : ""}
+    ${tab.thumbnail ? `<img src="${tab.thumbnail}" />` : ""}
   </div>`;
 
   $.querySelector("div.tab-meta-info-title").onclick = () => {
